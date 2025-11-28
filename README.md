@@ -73,3 +73,40 @@ Get help: [Post in our discussion board](https://github.com/orgs/skills/discussi
 &copy; 2024 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
 
 </footer>
+
+<!--
+  <<< Author notes: Developer Guide >>>
+  This section is added for developers maintaining this course repository.
+-->
+
+<details>
+<summary><strong>Developer Guide</strong></summary>
+
+### About this Repository
+
+This repository hosts the source code for the "Introduction to GitHub" course, part of GitHub Skills. The course is an interactive learning experience powered by GitHub Actions.
+
+### Repository Structure
+
+- `README.md`: The entry point for the course. It is updated by the workflows as the learner progresses.
+- `.github/steps/`: Contains the Markdown content for each step of the course.
+  - `-step.txt`: Tracks the current step number.
+  - `0-welcome.md` to `X-finish.md`: The content displayed in the README for each step.
+- `.github/workflows/`: Contains the logic for the course.
+  - `0-welcome.yml`: Initializes the course.
+  - `1-create-a-branch.yml` etc.: Specific logic to verify user actions and transition between steps.
+
+### How it Works
+
+The course operates as a state machine.
+1. The user performs an action (e.g., creates a branch).
+2. A GitHub Action workflow is triggered.
+3. The workflow checks if the action matches the requirement for the current step.
+4. If successful, the workflow uses `skills/action-update-step` to replace the content of `README.md` with the next step's content from `.github/steps/`.
+
+### Development
+
+To modify the course content, edit the Markdown files in `.github/steps/`.
+To modify the logic, edit the YAML files in `.github/workflows/`.
+
+</details>

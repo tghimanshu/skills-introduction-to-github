@@ -1,10 +1,20 @@
 name: Step 2, Commit a file
 
-# This step listens for the learner to commit a file to branch `my-first-branch`.
-# This workflow updates from step 2 to step 3.
+# ==============================================================================
+# Workflow: Step 2, Commit a file
+# Description:
+#   This workflow listens for a push event to the `my-first-branch` branch.
+#   This indicates that the learner has committed a file. It then transitions
+#   the course from Step 2 to Step 3.
+#
+# Triggers:
+#   - Push to `my-first-branch`.
+#   - Workflow Dispatch (manual trigger).
+#
+# Reference:
+#   - https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+# ==============================================================================
 
-# This action will run every time there's a push to `my-first-branch`.
-# Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
   push:
@@ -18,7 +28,14 @@ permissions:
   contents: write
 
 jobs:
-  # Get the current step to only run the main job when the learner is on the same step.
+  # ----------------------------------------------------------------------------
+  # Job: Check current step number
+  # Description:
+  #   Reads the current step number from the `.github/steps/-step.txt` file to
+  #   ensure the main logic runs only when the learner is on the correct step.
+  # Outputs:
+  #   current_step: The integer value of the current step.
+  # ----------------------------------------------------------------------------
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
@@ -31,6 +48,14 @@ jobs:
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
 
+  # ----------------------------------------------------------------------------
+  # Job: On commit a file
+  # Description:
+  #   Executes the transition from Step 2 to Step 3. It verifies that the push
+  #   occurred on the correct branch and step.
+  # Depends On:
+  #   get_current_step
+  # ----------------------------------------------------------------------------
   on_commit_a_file:
     name: On commit a file
     needs: get_current_step

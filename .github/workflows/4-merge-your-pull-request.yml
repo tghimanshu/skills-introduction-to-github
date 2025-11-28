@@ -1,10 +1,20 @@
 name: Step 4, Merge your pull request
 
-# This step listens for the learner to merge a pull request with branch `my-first-branch`.
-# This workflow updates from step 4 to step X.
+# ==============================================================================
+# Workflow: Step 4, Merge your pull request
+# Description:
+#   This workflow listens for a push to the `main` branch, which occurs when
+#   the learner merges their pull request. This is the final step, transitioning
+#   the course from Step 4 to Step X (Finish).
+#
+# Triggers:
+#   - Push to `main`.
+#   - Workflow Dispatch (manual trigger).
+#
+# Reference:
+#   - https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+# ==============================================================================
 
-# This will run every time we create push a commit to `main`.
-# Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
   push:
@@ -18,7 +28,14 @@ permissions:
   contents: write
 
 jobs:
-  # Get the current step to only run the main job when the learner is on the same step.
+  # ----------------------------------------------------------------------------
+  # Job: Check current step number
+  # Description:
+  #   Reads the current step number from the `.github/steps/-step.txt` file to
+  #   ensure the main logic runs only when the learner is on the correct step.
+  # Outputs:
+  #   current_step: The integer value of the current step.
+  # ----------------------------------------------------------------------------
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
@@ -31,6 +48,14 @@ jobs:
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
 
+  # ----------------------------------------------------------------------------
+  # Job: On merge your pull request
+  # Description:
+  #   Executes the final transition to the Finish step (Step X). It verifies
+  #   the merge into `main` and that the current step is 4.
+  # Depends On:
+  #   get_current_step
+  # ----------------------------------------------------------------------------
   on_merge_your_pull_request:
     name: On merge your pull request
     needs: get_current_step

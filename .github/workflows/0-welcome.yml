@@ -1,10 +1,21 @@
 name: Step 0, Welcome
 
-# This step triggers after the learner creates a new repository from the template.
-# This workflow updates from step 0 to step 1.
+# ==============================================================================
+# Workflow: Step 0, Welcome
+# Description:
+#   This workflow acts as the initialization step for the "Introduction to GitHub"
+#   course. It is triggered when the learner creates a new repository from the
+#   template. Its primary purpose is to transition the course from Step 0 to
+#   Step 1 by updating the README.md file.
+#
+# Triggers:
+#   - Push to the `main` branch (occurs upon repository creation).
+#   - Workflow Dispatch (manual trigger).
+#
+# Reference:
+#   - https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+# ==============================================================================
 
-# This will run every time we create push a commit to `main`.
-# Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
   push:
@@ -18,7 +29,14 @@ permissions:
   contents: write
 
 jobs:
-  # Get the current step to only run the main job when the learner is on the same step.
+  # ----------------------------------------------------------------------------
+  # Job: Check current step number
+  # Description:
+  #   Reads the current step number from the `.github/steps/-step.txt` file to
+  #   ensure the main logic runs only when the learner is on the correct step.
+  # Outputs:
+  #   current_step: The integer value of the current step.
+  # ----------------------------------------------------------------------------
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
@@ -31,6 +49,15 @@ jobs:
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
 
+  # ----------------------------------------------------------------------------
+  # Job: On welcome
+  # Description:
+  #   Executes the transition from Step 0 to Step 1. It verifies the current
+  #   step is 0, checks out the repository, and runs the `skills/action-update-step`
+  #   action to update the course content.
+  # Depends On:
+  #   get_current_step
+  # ----------------------------------------------------------------------------
   on_welcome:
     name: On welcome
     needs: get_current_step
