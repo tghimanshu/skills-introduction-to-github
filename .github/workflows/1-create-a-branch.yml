@@ -1,10 +1,20 @@
 name: Step 1, Create a branch
 
-# This step listens for the learner to create branch `my-first-branch`.
-# This workflow updates from step 1 to step 2.
+# ==============================================================================
+# Workflow: Step 1, Create a branch
+# Description:
+#   This workflow monitors for the creation of a specific branch named
+#   `my-first-branch`. When detected, it transitions the course from Step 1 to
+#   Step 2.
+#
+# Triggers:
+#   - Create event (when a branch or tag is created).
+#   - Workflow Dispatch (manual trigger).
+#
+# Reference:
+#   - https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+# ==============================================================================
 
-# This will run every time we create a branch or tag.
-# Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
   create:
@@ -16,7 +26,14 @@ permissions:
   contents: write
 
 jobs:
-  # Get the current step to only run the main job when the learner is on the same step.
+  # ----------------------------------------------------------------------------
+  # Job: Check current step number
+  # Description:
+  #   Reads the current step number from the `.github/steps/-step.txt` file to
+  #   ensure the main logic runs only when the learner is on the correct step.
+  # Outputs:
+  #   current_step: The integer value of the current step.
+  # ----------------------------------------------------------------------------
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
@@ -29,6 +46,14 @@ jobs:
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
 
+  # ----------------------------------------------------------------------------
+  # Job: On create a branch
+  # Description:
+  #   Executes the transition from Step 1 to Step 2. It verifies that a branch
+  #   named `my-first-branch` was created and that the current step is 1.
+  # Depends On:
+  #   get_current_step
+  # ----------------------------------------------------------------------------
   on_create_a_branch:
     name: On create a branch
     needs: get_current_step
